@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { auth, db } from "../firebase";
-import { addDoc, collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../firebase";
+import { addDoc, collection } from "firebase/firestore";
 
-function CreateTeam({ onClose }) {
+function CreateTeam({ onClose, userId }) {
   const [teamName, setTeamName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,24 +13,25 @@ function CreateTeam({ onClose }) {
     setLoading(true);
 
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not logged in");
+      if (!userId) throw new Error("User not logged in");
 
       const teamRef = await addDoc(collection(db, "teams"), {
         name,
-        ownerId: user.uid,
-        members: [user.uid],
+        ownerId: userId,
+        members: [userId],
         type: "team",
       });
 
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
-        teams: arrayUnion({
-          teamId: teamRef.id,
-          name,
-          type: "team",
-        }),
+      const boardsRef = collection(db, "teams", teamRef.id, "boards");
+      const boardRef = await addDoc(boardsRef, {
+        name: "Main Board",
       });
+
+      const columnsRef = collection(db, "teams", teamRef.id, "boards", boardRef.id, "columns");
+      const defaultColumns = ["To Do", "In Progress", "Done"];
+      for (const title of defaultColumns) {
+        await addDoc(columnsRef, { title });
+      }
 
       onClose();
     } catch (err) {
@@ -64,7 +65,7 @@ function CreateTeam({ onClose }) {
           </button>
           <button
             onClick={handleCreate}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 cursor-pointer"
+            className={`px-4 py-2 ${loading? "bg-indigo-400": "bg-indigo-600"} text-white rounded-lg text-sm ${loading? "hover:bg-indigo-400": "hover:bg-indigo-700"} cursor-pointer`}
             disabled={loading}
           >
             {loading ? "Creating..." : "Create"}

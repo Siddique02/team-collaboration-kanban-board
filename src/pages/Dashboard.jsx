@@ -2,8 +2,9 @@ import { useState } from "react";
 import Sidebar from "../componenets/Sidebar";
 import CreateTypeModal from "../componenets/CreateTypeModal";
 import CreateWorkspace from "../componenets/CreateWorkspace";
-import CreateTeamModal from "../componenets/CreateTeam";
+import CreateTeam from "../componenets/CreateTeam";
 import InviteMember from "../componenets/InviteMembers";
+import KanbanBoard from "../componenets/KanbanBoard";
 import { useParams } from "react-router-dom";
 
 
@@ -14,14 +15,14 @@ function Dashboard() {
   const [inviteModal, setInviteModal] = useState(null);
 
   return (
-    <div className="flex h-screen bg-gray-100 relative">
+    <div className="flex h-screen bg-white relative">
       <Sidebar
         userId={userId}
         onCreateClick={() => setModal("type")}
         onSelectTeam={(team) => setSelectedTeam(team)}
       />
 
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 overflow-x-hidden">
         {selectedTeam ? (
           <div>
             <div className="flex justify-between items-center mb-6">
@@ -34,8 +35,13 @@ function Dashboard() {
               </button>
             </div>
 
-            <p className="text-sm text-gray-500 mb-4">Type: {selectedTeam.type}</p>
-            <p className="text-gray-600">Here you can show other details of the team, like members, boards, etc.</p>
+            {selectedTeam ? (
+              <KanbanBoard key={selectedTeam.teamId} team={selectedTeam} teamId={selectedTeam.teamId} boardId={selectedTeam.boardId} />
+            ) : (
+              <p className="text-gray-400">
+                Select a team or workspace from the sidebar
+              </p>
+            )}
           </div>
         ) : (
           <p className="text-gray-400">Select a team or workspace from the sidebar</p>
@@ -48,8 +54,8 @@ function Dashboard() {
           onClose={() => setModal(null)}
         />
       )}
-      {modal === "workspace" && <CreateWorkspace onClose={() => setModal(null)} />}
-      {modal === "team" && <CreateTeamModal onClose={() => setModal(null)} />}
+      {modal === "workspace" && <CreateWorkspace onClose={() => setModal(null)} userId={userId} />}
+      {modal === "team" && <CreateTeam onClose={() => setModal(null)} userId={userId} />}
 
       {inviteModal && selectedTeam && (
         <InviteMember

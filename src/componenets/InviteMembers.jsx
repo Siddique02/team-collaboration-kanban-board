@@ -66,7 +66,7 @@ function InviteMemberModal({ teamId, teamName, onClose }) {
 
           <button
             onClick={handleInvite}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 cursor-pointer"
+            className={`px-4 py-2 ${loading? "bg-indigo-400": "bg-indigo-600"} text-white rounded-lg text-sm ${loading? "hover:bg-indigo-400": "hover:bg-indigo-700"} cursor-pointer`}
           >
             {loading ? "Inviting..." : "Invite"}
           </button>
