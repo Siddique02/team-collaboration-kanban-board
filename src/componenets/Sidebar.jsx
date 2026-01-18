@@ -1,12 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { db } from "../firebase";
 import { onSnapshot, collection, query, where, doc, deleteDoc, getDocs } from "firebase/firestore";
 
-function Sidebar({ userId, onCreateClick, onSelectTeam }) {
+function Sidebar({ userId, onCreateClick, onSelectTeam, onTeamDeleted }) {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openTeamMenu, setOpenTeamMenu] = useState(null);
   const [successMsg, setSuccessMsg] = useState("");
+
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenTeamMenu(null); // 👈 close menu
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (!userId) return;
@@ -56,6 +72,7 @@ function Sidebar({ userId, onCreateClick, onSelectTeam }) {
       }
 
       await deleteDoc(doc(db, "teams", teamId));
+      onTeamDeleted(teamId);
 
       setOpenTeamMenu(null);
     } catch (err) {
@@ -105,19 +122,20 @@ function Sidebar({ userId, onCreateClick, onSelectTeam }) {
                   {team.type}
                 </span>
 
-                <button
+                {team.ownerId === userId && <button
                   onClick={() => setOpenTeamMenu(openTeamMenu === team.teamId ? null : team.teamId)}
                   className="ml-2 opacity-0 group-hover:opacity-100 transition-all transform hover:scale-110 text-gray-600 hover:text-black cursor-pointer"
                 >
                   . . .
-                </button>
+                </button>}
               </div>
 
               {/* Dropdown menu */}
-              {openTeamMenu === team.teamId && (
+              {openTeamMenu === team.teamId && team.ownerId === userId && (
                 <div
                   className="absolute right-1 top-0.5 shadow-md text-xs z-50"
                   onClick={(e) => e.stopPropagation()}
+                  ref={menuRef}
                 >
                   <button
                     onClick={() => handleDeleteTeam(team.teamId)}

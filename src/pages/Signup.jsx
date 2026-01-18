@@ -25,7 +25,6 @@ function Signup () {
         name: name,
         email: user.email,
         role: "member",
-        teams: [],
       });
 
       const userId = auth.currentUser.uid;

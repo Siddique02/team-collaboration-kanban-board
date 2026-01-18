@@ -14,12 +14,19 @@ function Dashboard() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [inviteModal, setInviteModal] = useState(null);
 
+  const handleTeamDeleted = (deletedTeamId) => {
+    if (selectedTeam?.teamId === deletedTeamId) {
+      setSelectedTeam(null);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-white relative">
       <Sidebar
         userId={userId}
         onCreateClick={() => setModal("type")}
         onSelectTeam={(team) => setSelectedTeam(team)}
+        onTeamDeleted={handleTeamDeleted}
       />
 
       <div className="flex-1 p-6 overflow-x-hidden">

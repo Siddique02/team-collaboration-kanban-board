@@ -9,7 +9,6 @@ function AddTask({ onAdd, onClose }) {
     if (!title.trim()) return;
 
     onAdd({
-      id: crypto.randomUUID(),
       title,
       assignee,
     });
