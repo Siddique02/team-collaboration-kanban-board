@@ -87,7 +87,7 @@ function Sidebar({ userId, onCreateClick, onSelectTeam, onTeamDeleted }) {
 
 
   return (
-    <div className="w-64 bg-gray-100 p-4 flex flex-col shadow-lg shadow-gray-200 h-screen">
+    <div className="w-64 bg-gray-200 p-4 flex flex-col shadow-lg shadow-gray-200 h-screen">
       {successMsg && (
         <div className="mb-3 rounded-md bg-green-100 text-green-700 px-3 py-2 text-sm">
           ✅ {successMsg}

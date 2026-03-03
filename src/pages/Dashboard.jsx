@@ -25,7 +25,7 @@ function Dashboard() {
     <div className="flex h-screen bg-white relative overflow-hidden">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

@@ -1,7 +1,7 @@
 function CreateTypeModal({ onSelect, onClose }) {
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 z-40" />
+      <div className="fixed inset-0 bg-black/40 z-50" />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="bg-white w-full max-w-sm rounded-xl p-6 shadow-lg">
